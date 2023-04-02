@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 export function ClockToggle({ toggleClock }) {
   return (
@@ -8,55 +8,53 @@ export function ClockToggle({ toggleClock }) {
   );
 }
 
-function Clock (props) {
-  const [time, setTime] = useState(new Date())
+function Clock(props) {
+  const [time, setTime] = useState(new Date());
   useEffect(() => {
-    setTime(new Date())
-    let interval = setInterval(time, 1000)
-    return (
-      console.log('Clearing Clock interval!')
-      clearInterval(interval)
-    )
-  }, [])
+    const clockInterval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
 
-  componentWillUnmount() {
-    console.log("Clearing Clock interval!");
-    clearInterval(this.interval);
-  }
+    return () => {
+      console.log("Clearing Clock interval!");
+      clearInterval(clockInterval);
+    };
+  }, []);
 
-  tick = () => {
-    setTime(new Date());
-  };
+  // componentWillUnmount() {
+  //   console.log("Clearing Clock interval!");
+  //   clearInterval(this.interval);
+  // }
 
-  render() {
-    let hours = this.state.time.getHours();
-    let minutes = this.state.time.getMinutes();
-    let seconds = this.state.time.getSeconds();
-    hours = hours < 10 ? `0${hours}` : hours;
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
-    seconds = seconds < 10 ? `0${seconds}` : seconds;
+  // tick = () => {
+  //   setTime(new Date());
+  // };
+  const timezone = time
+    .toTimeString() // Form: "14:39:07 GMT-0600 (PDT)"
+    .replace(/[^A-Z]/g, "") // Strip out all but capitals
+    .slice(3); // Eliminate initial GMT
+  let hours = time.getHours();
+  let minutes = time.getMinutes();
+  let seconds = time.getSeconds();
+  hours = hours < 10 ? `0${hours}` : hours;
+  minutes = minutes < 10 ? `0${minutes}` : minutes;
+  seconds = seconds < 10 ? `0${seconds}` : seconds;
 
-    const timezone = this.state.time
-      .toTimeString() // Form: "14:39:07 GMT-0600 (PDT)"
-      .replace(/[^A-Z]/g, "") // Strip out all but capitals
-      .slice(3); // Eliminate initial GMT
-
-    return (
-      <section className="clock-section">
-        <h1>Clock</h1>
-        <div className="clock">
-          <p className="time">
-            <span>Time:</span>
-            <span>{`${hours}:${minutes}:${seconds} ${timezone}`}</span>
-          </p>
-          <p className="date">
-            <span>Date:</span>
-            <span>{this.state.time.toDateString()}</span>
-          </p>
-        </div>
-      </section>
-    );
-  }
+  return (
+    <section className="clock-section">
+      <h1>Clock</h1>
+      <div className="clock">
+        <p className="time">
+          <span>Time:</span>
+          <span>{`${hours}:${minutes}:${seconds} ${timezone}`}</span>
+        </p>
+        <p className="date">
+          <span>Date:</span>
+          <span>{time.toDateString()}</span>
+        </p>
+      </div>
+    </section>
+  );
 }
 
 export default Clock;
